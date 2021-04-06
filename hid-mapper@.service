@@ -1,0 +1,13 @@
+[Unit]
+Description=USB Remote control for VDR
+After=dev-ir\x2dvdr.device
+BindsTo=dev-ir\x2dvdr.device
+
+[Service]
+Type=exec
+LogRateLimitIntervalSec=2
+LogRateLimitBurst=5
+ExecStart=/usr/bin/hid_mapper --lookup-id --manufacturer 0471 --product %i --map /usr/share/hid-mapper/vdr.map
+
+[Install]
+WantedBy=multi-user.target dev-ir\x2dvdr.device

@@ -1,0 +1,12 @@
+###########################################################
+# Zotac IR Remote receiver
+###########################################################
+# over-ride power and sleep keys
+
+evdev:input:b0003v0471p0613*
+ KEYBOARD_KEY_10081=o
+ KEYBOARD_KEY_10082=p
+
+evdev:input:b0003v0471p20cc*
+ KEYBOARD_KEY_10081=o
+ KEYBOARD_KEY_10082=p

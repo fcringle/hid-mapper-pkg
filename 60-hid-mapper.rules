@@ -1,0 +1,4 @@
+# UDEV rules for pluggable IR receivers - ENV variables can be monitored
+# via 'sudo udevadm monitor --udev --subsystem-match=usb --property'
+SUBSYSTEM=="hidraw", ACTION=="add", ATTRS{idVendor}=="0471", ATTRS{idProduct}=="20cc", SYMLINK+="ir-vdr", TAG+="systemd", ENV{SYSTEMD_WANTS}="hid-mapper@20cc.service"
+SUBSYSTEM=="hidraw", ACTION=="add", ATTRS{idVendor}=="0471", ATTRS{idProduct}=="0613", SYMLINK+="ir-vdr", TAG+="systemd", ENV{SYSTEMD_WANTS}="hid-mapper@0613.service"

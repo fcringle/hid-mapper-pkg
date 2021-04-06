@@ -1,0 +1,141 @@
+diff --git a/EventMapping.cpp b/EventMapping.cpp
+index c604b23..018d1ee 100644
+--- a/EventMapping.cpp
++++ b/EventMapping.cpp
+@@ -82,7 +82,7 @@ LinkedList<event_mapping> *EventMapping::LookupEvent(const void *event,unsigned
+ 	if(map_hash_size[event_length-1]==0)
+ 		return event_list;
+ 	
+-	int i,j;
++	unsigned int i,j;
+ 	for(i=0;i<map_hash_size[event_length-1];i++)
+ 	{
+ 		for(j=0;j<event_length;j++)
+diff --git a/Keys.cpp b/Keys.cpp
+index 10369ac..e0e30c7 100644
+--- a/Keys.cpp
++++ b/Keys.cpp
+@@ -45,7 +45,7 @@ int Keys::Lookup(const char *key_name)
+ const char* Keys::ReverseLookup(int key_int)
+ {
+ 	// linear search...
+-	for(int i = 0; i < keys_array_size; ++i)
++	for(unsigned int i = 0; i < keys_array_size; ++i)
+ 	{
+ 		if (keys_int[i] == key_int)
+ 			return keys_char[i];
+@@ -57,9 +57,9 @@ const char* Keys::ReverseLookup(int key_int)
+ int Keys::GetMaxKey(void)
+ {
+ 	int max = keys_int[0];
+-	for(int i=1;i<keys_array_size;i++)
++	for(unsigned int i=1;i<keys_array_size;i++)
+ 		if(keys_int[i]>max)
+ 			max = keys_int[i];
+ 	
+-		return max;
++	return max;
+ }
+diff --git a/Makefile b/Makefile
+index fc41303..e53ecb2 100644
+--- a/Makefile
++++ b/Makefile
+@@ -25,6 +25,10 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all,+fortify
+ DPKG_EXPORT_BUILDFLAGS = 1
+ -include /usr/share/dpkg/buildflags.mk
+ 
++# defaults for non-debian systems
++CPPFLAGS ?= -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
++CFLAGS   ?= -O3 -Wall
++
+ CPPFLAGS+=-Iinclude -fPIC
+ CFLAGS+=-Iinclude -fPIC
+ LDFLAGS+=
+diff --git a/MapReaderMouse.cpp b/MapReaderMouse.cpp
+index f707779..621ea34 100644
+--- a/MapReaderMouse.cpp
++++ b/MapReaderMouse.cpp
+@@ -102,8 +102,10 @@ void MapReaderMouse::LoadMap(const char *filename,EventMapping *map)
+ 			
+ 			// Read action type
+ 			i = 0;
+-			while(i<MOUSE_ACTION_MAXLENGTH && ptr[i]!='\0' && ptr[i]!='\n' && ptr[i]!=' ' && ptr[i]!=':')
+-				action_type[i] = ptr[i++];
++			while(i<MOUSE_ACTION_MAXLENGTH && ptr[i]!='\0' && ptr[i]!='\n' && ptr[i]!=' ' && ptr[i]!=':') {
++				action_type[i] = ptr[i];
++				i++;
++			}
+ 			
+ 			if(i==MOUSE_ACTION_MAXLENGTH)
+ 			{
+@@ -139,8 +141,10 @@ void MapReaderMouse::LoadMap(const char *filename,EventMapping *map)
+ 			
+ 			// Read movement
+ 			i = 0;
+-			while(i<MOUSE_MOVE_MAXLENGTH && ptr[i]!='\0' && ptr[i]!='\n' && ptr[i]!=' ')
+-				move[i] = ptr[i++];
++			while(i<MOUSE_MOVE_MAXLENGTH && ptr[i]!='\0' && ptr[i]!='\n' && ptr[i]!=' ') {
++				move[i] = ptr[i];
++				i++;
++			}
+ 			
+ 			if(i==MOUSE_MOVE_MAXLENGTH)
+ 			{
+diff --git a/hid.c b/hid.c
+index 563b548..8d275be 100644
+--- a/hid.c
++++ b/hid.c
+@@ -76,7 +76,7 @@ int lookup_hid_product(int lookup_mode,const char *manufacturer,const char *prod
+ 	if(dh==0)
+ 		return -1;
+ 	
+-	while(entry = readdir(dh))
++	while((entry = readdir(dh)))
+ 	{
+ 		re = snprintf(filename,PATH_MAX,SYSFS_HIDRAW_CLASS_PATH "/%s",entry->d_name);
+ 		if(re>=PATH_MAX)
+diff --git a/include/EventMapping.h b/include/EventMapping.h
+index 345ca24..f46d1c6 100644
+--- a/include/EventMapping.h
++++ b/include/EventMapping.h
+@@ -47,8 +47,8 @@ private:
+ 	
+ 	LinkedList<event_mapping> *event_list;
+ 	
+-	int enum_current_hash_size;
+-	int enum_current_position;
++	unsigned int enum_current_hash_size;
++	unsigned int enum_current_position;
+ 	
+ public:
+ 	EventMapping(void);
+diff --git a/main.cpp b/main.cpp
+index 3772939..394fd17 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -194,7 +194,7 @@ int main(int argc,char **argv)
+ 	}
+ 	
+ 	// Lookup for specified HID device
+-	int re,max_hid_fd;
++	int re;
+ 	
+ 	if(wait>0)
+ 		fprintf(stderr,"Waiting device for %d second(s)\n",wait);
+@@ -292,14 +292,14 @@ int main(int argc,char **argv)
+ 			{
+ 				if ((count&1))
+ 				{
+-					for(int i=0;i<event_length;i++)
++					for(unsigned int i=0;i<event_length;i++)
+ 						printf("%02x",(unsigned char)event[i]);
+ 					printf(":%s\n", Keys::ReverseLookup(event_map->value));
+ 				}
+ 			}
+ 			else 
+ 			{
+-				for(int i=0;i<event_length;i++)
++				for(unsigned int i=0;i<event_length;i++)
+ 					printf("%02x ",(unsigned char)event[i]);
+ 				printf("\n");
+ 			}

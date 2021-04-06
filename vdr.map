@@ -1,0 +1,17 @@
+#
+# manufacturer : PHILIPS
+# product : MCE USB IR Receiver- Spinel plus
+#
+030020000000000000:KEY_MENU
+030040000000000000:KEY_R          # Red
+030080000000000000:KEY_G          # Green
+030000010000000000:KEY_Y          # Yellow
+030000020000000000:KEY_B          # Blue
+031000000000000000:KEY_T          # T (between Clear and Enter)
+02080000:KEY_U                    # Channel Up
+02100000:KEY_D                    # Channel Down
+
+# PVR, EPG, FAVORITES. Only on Olidata remote
+030000004000000000:KEY_V
+030800000000000000:KEY_E
+030010000000000000:KEY_F

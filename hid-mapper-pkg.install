@@ -1,0 +1,9 @@
+post_install() {
+  systemd-hwdb update
+  echo "You might want to copy /usr/share/doc/hid-mapper/remote.conf"
+  echo "to /var/lib/vdr/remote.conf and change it's ownership."
+}
+
+post_remove() {
+  systemd-hwdb update
+}
